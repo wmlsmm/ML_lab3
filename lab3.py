@@ -57,7 +57,7 @@ def computePrior(labels, W=None):
 def mlParams(X, labels, W=None):
     assert(X.shape[0]==labels.shape[0])
     Npts,Ndims = np.shape(X)
-    classes, class_counts = np.unique(labels, return_counts = True)     # array([1, 2, 3, 4])
+    classes = np.unique(labels)     # array([1, 2, 3, 4])
     Nclasses = np.size(classes)     # 4
 
     if W is None:
@@ -68,9 +68,11 @@ def mlParams(X, labels, W=None):
 
     # TODO: fill in the code to compute mu and sigma!
     # ==========================
-    for k in classes:
+    for i, k in enumerate(classes):
         idx = labels == k # 10000101110000
-        xlc = X[idx,:]  # Get the x for the class labels. Vectors are rows.
+        xlc = X[idx,:]
+        mu[i,:] = np.sum(xlc, axis = 0) / xlc.shape[0]
+        sigma[i,:,:] = np.diag(np.sum(np.square( xlc-mu[i,:] ), axis=0) / xlc.shape[0])
     # ==========================
 
     return mu, sigma
@@ -109,6 +111,7 @@ class BayesClassifier(object):
         rtn = BayesClassifier()
         rtn.prior = computePrior(labels, W)
         rtn.mu, rtn.sigma = mlParams(X, labels, W)
+        print(rtn.mu, rtn.sigma)
         rtn.trained = True
         return rtn
 
@@ -214,7 +217,7 @@ class BoostClassifier(object):
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 
 
-#testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
+testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
 
 
 
