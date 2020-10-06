@@ -50,25 +50,27 @@ def computePrior(labels, W=None):
     return prior
 
 # NOTE: you do not need to handle the W argument for this part!
-# in:      X - N x d matrix of N data points
-#     labels - N vector of class labels
-# out:    mu - C x d matrix of class means (mu[i] - class i mean)
-#      sigma - C x d x d matrix of class covariances (sigma[i] - class i sigma)
+# in:      X - N x d matrix of N data points    (x1,y1,z1,...d),(x2,y2,z2,...)
+#     labels - N vector of class labels             1               2/3
+# out:    mu - C x d matrix of class means (mu[i] = class i mean)
+#      sigma - C x d x d matrix of class covariances (sigma[i] = class i sigma)
 def mlParams(X, labels, W=None):
     assert(X.shape[0]==labels.shape[0])
     Npts,Ndims = np.shape(X)
-    classes = np.unique(labels)
-    Nclasses = np.size(classes)
+    classes, class_counts = np.unique(labels, return_counts = True)     # array([1, 2, 3, 4])
+    Nclasses = np.size(classes)     # 4
 
     if W is None:
-        W = np.ones((Npts,1))/float(Npts)
+        W = np.ones((Npts,1))/float(Npts)   # (1 1 1 1 1 ..... N)' / N = (1/N 1/N ...)'
 
     mu = np.zeros((Nclasses,Ndims))
     sigma = np.zeros((Nclasses,Ndims,Ndims))
 
     # TODO: fill in the code to compute mu and sigma!
     # ==========================
-    
+    for k in classes:
+        idx = labels == k # 10000101110000
+        xlc = X[idx,:]  # Get the x for the class labels. Vectors are rows.
     # ==========================
 
     return mu, sigma
