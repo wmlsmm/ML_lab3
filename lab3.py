@@ -165,6 +165,7 @@ def trainBoost(base_classifier, X, labels, T=10):
         # TODO: Fill in the rest, construct the alphas etc.
         # ==========================
         # 2.
+
         delta = np.zeros([Npts,1])
         for i in range(Npts):
             if vote[i] == labels[i]:
@@ -178,9 +179,41 @@ def trainBoost(base_classifier, X, labels, T=10):
         wNew = wCur
         for i in range(wCur.shape[0]):
             if delta[i] == 1:
-                wNew[i] = (wCur[i] / 1 ) * np.exp(-alpha)    # Ovdje treba umjesto 1 stavit Z al neznam to za sad
+                wNew[i] = (wCur[i] / 1 ) * np.exp(-alpha)
             else:
                 wNew[i] = (wCur[i] / 1 ) * np.exp(alpha)
+        Z = np.sum(wNew)
+        wNew = wNew / Z
+
+        '''
+        #OVO NIJE MOJ KOD ALI DAJE BOLJE NEGO MOJ GORE
+        #MOJ:classification accuracy  92.8 with standard deviation 7.12
+        #   neki triali ispod 90
+        #OVAJ: mean classification accuracy  93.9 with standard deviation 6.73
+        #       nijedan trial ispod 90, svi iznad 93 (svi kazu u wapp grupi da tako treba bit, NITKO nema ispod 93)
+        #CAN YOU SPOT THE DIFFERENCE? (mozda u error?)
+        weightsum = np.sum(wCur)
+
+        # Adaboost step (2)
+        error = weightsum
+        correctvote = np.where(vote == labels)[0]
+        for i in correctvote:
+            error -= wCur[i]
+
+            # Adaboost step (3)
+        curAlpha = (np.log(1 - error) - np.log(error)) / 2  # Compute new alpha
+        alphas.append(curAlpha)  # you will need to append the new alpha
+
+        # Adaboost step (4)
+        falsevote = np.where(vote != labels)[0]
+        wOld = wCur
+
+        for i in correctvote:
+            wCur[i] = wOld[i] * np.exp(-curAlpha)
+        for i in falsevote:
+            wCur[i] = wOld[i] * np.exp(curAlpha)
+        wCur /= np.sum(wCur)
+        '''
         # ==========================
 
     return classifiers, alphas
@@ -206,11 +239,8 @@ def classifyBoost(X, classifiers, alphas, Nclasses):
         # ==========================
         for i, classifier in enumerate(classifiers):
             vote = classifier.classify(X)
-            for j in range(X.shape[0]):
-                votes[j][vote[j]] += 1
-
-        #for k in range(Nclasses):
-        #    votes = np.sum( alphas * classifiers)
+            for j in range(Npts):
+                votes[j][vote[j]] += alphas[i]
         # ==========================
 
         # one way to compute yPred after accumulating the votes
@@ -242,15 +272,13 @@ class BoostClassifier(object):
 # 
 # Call the `testClassifier` and `plotBoundary` functions for this part.
 
-# =============== Test the Maximum Likelihood estimates
+# ==============ASSIGNMENT 3 ======= Test the Maximum Likelihood estimates
 # testClassifier(BayesClassifier(), dataset='iris', split=0.7)
 # plotBoundary(BayesClassifier(), dataset='iris',split=0.7)
 # testClassifier(BayesClassifier(), dataset='vowel', split=0.7)
 # plotBoundary(BayesClassifier(), dataset='vowel',split=0.7)
 
-# ============== ASSIGNMENT 3
-
-#BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
+# ============== ASSIGNMENT 5=======BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7))
 testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
 plotBoundary(BoostClassifier(BayesClassifier()), dataset='iris',split=0.7)
 
