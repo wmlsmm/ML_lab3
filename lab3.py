@@ -74,7 +74,6 @@ def mlParams(X, labels, W=None):
 
     # TODO: fill in the code to compute mu and sigma!
     # ==========================
-
     for i, k in enumerate(classes):
         idx = labels == k
         xlc = X[idx,:]
@@ -279,34 +278,22 @@ class BoostClassifier(object):
 # plotBoundary(BayesClassifier(), dataset='vowel',split=0.7)
 
 # ============== ASSIGNMENT 5=======BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7))
-testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
-plotBoundary(BoostClassifier(BayesClassifier()), dataset='iris',split=0.7)
+# testClassifier(BoostClassifier(BayesClassifier(), T=10), dataset='iris',split=0.7)
+# plotBoundary(BoostClassifier(BayesClassifier()), dataset='iris',split=0.7)
 
+#============= Now repeat the steps with a decision tree classifier.
 
-# Now repeat the steps with a decision tree classifier.
+#============== NO boost iris
+# testClassifier(DecisionTreeClassifier(), dataset='iris', split=0.7)
+# plotBoundary(DecisionTreeClassifier(), dataset='iris',split=0.7)
 
+#============== WITH boost iris
+# testClassifier(BoostClassifier(DecisionTreeClassifier(), T=10), dataset='iris',split=0.7)
+# plotBoundary(BoostClassifier(DecisionTreeClassifier(), T=10), dataset='iris',split=0.7)
 
-#testClassifier(DecisionTreeClassifier(), dataset='iris', split=0.7)
-
-
-
-#testClassifier(BoostClassifier(DecisionTreeClassifier(), T=10), dataset='iris',split=0.7)
-
-
-
+#============= vowel
 #testClassifier(DecisionTreeClassifier(), dataset='vowel',split=0.7)
-
-
-
 #testClassifier(BoostClassifier(DecisionTreeClassifier(), T=10), dataset='vowel',split=0.7)
-
-
-
-#plotBoundary(DecisionTreeClassifier(), dataset='iris',split=0.7)
-
-
-
-#plotBoundary(BoostClassifier(DecisionTreeClassifier(), T=10), dataset='iris',split=0.7)
 
 '''
 # ## Bonus: Visualize faces classified using boosted decision trees
